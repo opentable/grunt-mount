@@ -1,12 +1,23 @@
 module.exports = function(grunt){
 
     /*
-     var optionsSample = {
-         mountPoint: "/mnt/share", // on windows systems, this is a drive letter, on *nix it will be the mount point
-         path: "//user:password@server/share",
-         fileSystem: "smbfs", // e.g. smbfs, cifs etc.
-         createMountPoint: true|false // if *nix, create the mount-point folder
-     };
+    var optionsSample = {
+      windows: {
+        driveLetter: "X"
+      },
+      '*nix': {
+        // options common to linux, mac os
+        mountPoint: "/mnt/share",
+        fileSystem: "smbfs",
+        createMountPoint: true // create the mount point folder
+      },
+      share: {
+        host: "my.server.com",
+        folder: "/path/to/share"  // can be /path/to/share or \path\to\share, will be normalised
+      },
+      username: "username",
+      password: "password"
+    };
      */
 
     grunt.registerMultiTask('mount', 'mount a network share', function(){
@@ -20,19 +31,24 @@ module.exports = function(grunt){
 
         grunt.verbose.writeflags(options, 'Options');
 
-        if(options.createMountPoint && process.platform !== 'win32'){
-            grunt.verbose.writeln('creating directory: ' + options.mountPoint);
-            grunt.file.mkdir(options.mountPoint);
+        if(options['*nix'].createMountPoint && process.platform !== 'win32'){
+            grunt.verbose.writeln('creating directory: ' + options['*nix'].mountPoint);
+            grunt.file.mkdir(options['*nix'].mountPoint);
         }
 
         exec(command.join(" "), grunt, done);
     });
 
     /*
-     var optionsSample = {
-        mountPoint: "/mnt/share", // on windows systems, this is a drive letter, on *nix it will be the mount point
-        removeMountPoint: true|false // if *nix, delete the mount-point folder after unmounting
-     };
+    var optionsSample = {
+      windows: {
+        driveLetter: "X"
+      },
+      '*nux': {
+        mountPoint: "/mnt/share",
+        removeMountPoint: [true|false] // if *nix, delete the mount-point folder after unmounting
+      }
+    };
      */
 
     grunt.registerMultiTask('unmount', 'unmount a network share', function(){
@@ -48,9 +64,8 @@ module.exports = function(grunt){
 
         exec(command.join(" "), grunt, function(){
 
-            if(options.removeMountPoint && process.platform !== 'win32'){
-                grunt.verbose.writeln('deleting directory: ' + options.mountPoint);
-                grunt.file.delete(options.mountPoint, { force: true });
+            if(options['*nix'].removeMountPoint && process.platform !== 'win32'){
+                grunt.file.delete(options['*nix'].mountPoint, { force: true });
             }
 
             done();
