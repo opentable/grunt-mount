@@ -18,7 +18,12 @@ module.exports.mount = function(options){
             options.mountPoint,
             "-o user=" + options.username + ",pass=" + options.password
         ],
-        sunos: [],
+        sunos: [
+            "mount",
+            "-F" + options.fileSystem,
+            options.path,
+            options.mountPoint
+        ],
         win32: [
             "net use",
             options.mountPoint,
@@ -42,7 +47,10 @@ module.exports.unmount = function(options){
             "umount",
             options.mountPoint
         ],
-        sunos: [],
+        sunos: [
+            "umount",
+            options.mountPoint
+        ],
         win32: [
             "net use",
             options.mountPoint,
