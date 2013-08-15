@@ -21,10 +21,18 @@ grunt.initConfig({
   mount: {
     share: {
       options: {
-        mountPoint: "/mnt/share", // on *nix systems this is a folder, on windows this should be a drive letter
-        path: "//server/share", // the share you want to mount
-        fileSystem: "smbfs", // equivalent to -t [smbfs|cifs|nfs] etc
-        createMountPoint: true, // on *nix create the mount-point directory
+        windows: {                      // windows specific options
+          driveLetter: "X"
+        },
+        '*nix': {                       // *nix specific options
+          mountPoint: "/mnt/share",     // can be relative or absolute
+          fileSystem: "smbfs",          // equivalent to 'mount -t [smbfs|cifs|nfs]'
+          createMountPoint: true        // create the mount-point directory if it doesn't exist
+        },
+        share: {
+          host: "my.server.com",
+          folder: "/path/to/folder"     // paths can be windows or *nix style (will be normalised)
+        },
         username: "someuser",
         password: "password"
       }
@@ -33,8 +41,13 @@ grunt.initConfig({
   unmount: {
     share: {
         options: {
-            mountPoint: "/mnt/share",
-            removeMountPoint: true  // on *nix, deletes the folder after unmounting
+            windows:{                    // windows specific options
+              driveLetter: "X"
+            },
+            '*nix':{                     // unix specific options
+              mountPoint: "/mnt/share",
+              removeMountPoint: true     // deletes the folder after unmounting
+            }
         }
     }
   }
@@ -43,100 +56,7 @@ grunt.initConfig({
   grunt.loadNpmTasks('grunt-mount');
 ```
 
-# Mount task
+Limitations:
 
-Platform-specific examples:
-
-___Linux___
-
-```js
-mount: {
-  share: {
-    options: {
-      mountPoint: "/mnt/share",
-      path: "//server/share",
-      fileSystem: "smbfs",
-      createMountPoint: true,
-      username: "someuser",
-      password: "password"
-    }
-  }
-}
-```
-
-You can omit the username and password fields, and include the credentials in the path like so
-`path: //user:password@server/share`
-
-
-___Mac OS___
-
-```js
-mount: {
-  share: {
-    options: {
-      mountPoint: "/mnt/share",
-      path: "//user:password@server/share",
-      fileSystem: "smbfs",
-      createMountPoint: true
-    }
-  }
-}
-```
-
-_Limitation:_ credentials *must* be specified in the path
-
-___Windows___
-
-```js
-
-mount:{
-  share: {
-    options: {
-      mountPoint: "X:",
-      path: "\\\\server\\share",
-      username: "someuser",
-      password: "password"
-    }
-  }
-}
-```
-
-_Limitation:_ Windows doesn't allow specifying credentials in the path, must use username and password
-
-# Unmount task
-
-Platform-specific examples
-
-___Linux___
-
-```js
-mount: {
-  share: {
-    mountPoint: "/mnt/share",
-    removeMountPoint: true
-  }
-}
-```
-
-___Mac OS___
-
-```js
-mount: {
-  share: {
-    mountPoint: "/mnt/share",
-    removeMountPoint: true
-  }
-}
-```
-
-___Windows___
-
-```js
-mount: {
-  share: {
-    options: {
-      mountPoint: "X:"
-    }
-  }
-}
-```
+- only works for Linux, MacOS and Windows (FreeBSD and SunOS coming)
+- Must specify a drive letter for Windows
