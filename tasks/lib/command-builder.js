@@ -9,7 +9,7 @@ buildPath = function(options){
         bits;
 
     // allow the user to specify any kind of path: /path/to/share or \path\to\share
-    if(share.folder.indexOf('/') > 0){
+    if(share.folder.indexOf('/') > -1){
         bits = share.folder.split('/');
     }
     else {
@@ -18,7 +18,7 @@ buildPath = function(options){
 
     return sep + sep + p.normalize([
         credentials + share.host,
-        bits
+        bits.join(sep)
     ].join(sep));
 };
 
