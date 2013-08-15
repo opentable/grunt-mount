@@ -16,7 +16,7 @@ module.exports.mount = function(options){
             "-t " + options.fileSystem,
             options.path,
             options.mountPoint,
-            "-o user=" + options.username + ",pass=" + options.password
+            options.username ? "-o user=" + options.username + ",pass=" + options.password : ""
         ],
         sunos: [
             "mount",
@@ -28,8 +28,8 @@ module.exports.mount = function(options){
             "net use",
             options.mountPoint,
             options.path,
-            options.password,
-            "/user:" + options.username
+            options.password ? options.password : "",
+            options.username ? "/user:" + options.username : ""
         ]
     };
 
