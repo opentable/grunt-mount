@@ -1,4 +1,5 @@
 module.exports = function(grunt){
+    var path = require('path');
 
     /*
     var optionsSample = {
@@ -26,7 +27,7 @@ module.exports = function(grunt){
             options = this.options({
                 createMountPoint: false
             }),
-            command = commandBuilder(options),
+            command = commandBuilder(options, process.platform, path.sep),
             done = this.async();
 
         grunt.verbose.writeflags(options, 'Options');
@@ -36,7 +37,7 @@ module.exports = function(grunt){
             grunt.file.mkdir(options['*nix'].mountPoint);
         }
 
-        exec(command.join(" "), grunt, done);
+        exec(command, grunt, done);
     });
 
     /*
@@ -57,12 +58,12 @@ module.exports = function(grunt){
             options = this.options({
                 removeMountPoint: false
             }),
-            command = commandBuilder(options),
+            command = commandBuilder(options, process.platform),
             done = this.async();
 
         grunt.verbose.writeflags(options, 'Options');
 
-        exec(command.join(" "), grunt, function(){
+        exec(command, grunt, function(){
 
             if(options['*nix'].removeMountPoint && process.platform !== 'win32'){
                 grunt.file.delete(options['*nix'].mountPoint, { force: true });

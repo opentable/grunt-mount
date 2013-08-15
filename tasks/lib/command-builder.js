@@ -1,11 +1,8 @@
 var p = require('path'),
 
-
-buildPath = function(options){
-    var sep = p.sep,
-        share = options.share,
-        platform = process.platform,
-        credentials = (platform === 'darwin' ? options.username + ":" + options.password + "@" : ""),
+buildPath = function(options, platform, sep){
+    var share = options.share,
+        credentials = (platform === 'darwin' && options.username ? options.username + ":" + options.password + "@" : ""),
         bits;
 
     // allow the user to specify any kind of path: /path/to/share or \path\to\share
@@ -16,32 +13,35 @@ buildPath = function(options){
         bits = share.folder.split('\\');
     }
 
-    return sep + sep + p.normalize([
-        credentials + share.host,
-        bits.join(sep)
-    ].join(sep));
+    bits = bits.filter(function(v){ return v !== '';});
+
+    return sep + sep + [
+            credentials + share.host,
+            bits.join(sep)
+        ].join(sep);
 };
 
-module.exports.mount = function(options){
+module.exports.mount = function(options, platform, sep){
+    var path = buildPath(options, platform, sep);
 
     var command = {
         darwin:[
             "mount",
             "-t " + options['*nix'].fileSystem,
-            buildPath(options),
+            path,
             options['*nix'].mountPoint
         ],
         linux: [
             "mount",
             "-t " + options['*nix'].fileSystem,
-            buildPath(options),
+            path,
             options['*nix'].mountPoint,
             options.username ? "-o user=" + options.username + ",pass=" + options.password : ""
         ],
         win32: [
             "net use",
             options.windows.driveLetter + ":",
-            buildPath(options),
+            path,
             options.password ? options.password : "",
             options.username ? "/user:" + options.username : ""
         ],
@@ -50,10 +50,10 @@ module.exports.mount = function(options){
         freebsd: []
     };
 
-    return command[process.platform];
+    return command[platform].join(" ").trim();
 };
 
-module.exports.unmount = function(options){
+module.exports.unmount = function(options, platform){
     var command = {
         darwin:[
             "umount",
@@ -66,7 +66,7 @@ module.exports.unmount = function(options){
 
         win32: [
             "net use",
-            options.windows.driveLetter,
+            options.windows.driveLetter + ":",
             "/delete"
         ],
         // Todo:
@@ -74,5 +74,5 @@ module.exports.unmount = function(options){
         freebsd: []
     };
 
-    return command[process.platform];
+    return command[platform].join(" ").trim();
 };

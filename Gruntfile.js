@@ -12,7 +12,14 @@ module.exports = function(grunt) {
         jshintrc: '.jshintrc'
       }
     },
-
+    mochaTest:{
+      options: {
+        reporter: 'spec'
+      },
+      unitTests:{
+        src: ['tests/**/*.js']
+      }
+    },
     mount: {
       share: {
         options:{
@@ -48,9 +55,9 @@ module.exports = function(grunt) {
     }
   });
 
-  // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadTasks('tasks');
-  grunt.registerTask('test', ['jshint']);
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('test', ['jshint', 'mochaTest']);
+  grunt.registerTask('default', ['jshint', 'mochaTest']);
 };
