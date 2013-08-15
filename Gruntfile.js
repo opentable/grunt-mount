@@ -16,19 +16,18 @@ module.exports = function(grunt) {
     mount: {
         jaws: {
             options: {
-                mountPoint: "../JAWS",
-                path: "//jaws.otcorp.opentable.com/dev_builds/web/RestProfile",
+                mountPoint: "/mnt/share",
+                path: "//user:pass@myserver/share",
                 fileSystem: "smbfs",
-                createMountPoint: true,
-                username: "build",
-                password: "0tengdeploy"
+                createMountPoint: true
             }
         }
     },
     unmount: {
       jaws: {
           options: {
-              mountPoint: "../JAWS"
+              mountPoint: "/mnt/share",
+              removeMountPoint: true
           }
       }
     }
