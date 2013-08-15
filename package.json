@@ -1,0 +1,35 @@
+{
+  "name": "grunt-mount",
+  "version": "0.0.1",
+  "description": "grunt task to mount a network share",
+  "homepage": "https://github.com/andyroyle/grunt-mount",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andyroyle/grunt-mount.git"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "author": "Andy Royle",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/andyroyle/grunt-mount/blob/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/andyroyle/grunt-mount/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9",
+    "grunt-contrib-jshint": "~0.6.2"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.1"
+  }
+}
