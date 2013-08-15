@@ -14,20 +14,49 @@ module.exports = function(grunt) {
     },
 
     mount: {
-        jaws: {
+        '*nix': {
             options: {
                 mountPoint: "/mnt/share",
-                path: "//user:pass@myserver/share",
+                path: "//server/share",
+                fileSystem: "smbfs",
+                createMountPoint: true,
+                username: "someuser",
+                password: "password"
+            }
+        },
+        macos: {
+            options: {
+                mountPoint: "/mnt/share",
+                path: "//someuser:password@server/share",
                 fileSystem: "smbfs",
                 createMountPoint: true
+            }
+        },
+        windows: {
+            options: {
+                mountPoint: "X:",
+                path: "\\\\server\\share",
+                username: "someuser",
+                password: "password"
             }
         }
     },
     unmount: {
-      jaws: {
+      '*nix': {
           options: {
               mountPoint: "/mnt/share",
               removeMountPoint: true
+          }
+      },
+      macos: {
+          options: {
+              mountPoint: "/mnt/share",
+              removeMountPoint: true
+          }
+      },
+      windows: {
+          options: {
+              mountPoint: "X:"
           }
       }
     }
