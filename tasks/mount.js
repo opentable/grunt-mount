@@ -1,6 +1,17 @@
 module.exports = function(grunt){
     var path = require('path'),
-        pathNormaliser = require('./lib/path-normaliser');
+        fs = require('fs'),
+
+        deleteMountPoint = function(folder){
+
+        // need to fs.unlink directly on windows because
+        // the grunt.file.delete method doesn't recognise symlinks!
+        if(process.platform === 'win32'){
+            fs.unlinkSync(folder);
+        } else {
+            grunt.file.delete(folder, {force: true});
+        }
+    };
 
     /*
     var optionsSample = {
@@ -34,7 +45,7 @@ module.exports = function(grunt){
 
         if(grunt.file.exists(options.mountPoint)){
             grunt.log.warn('mount point already exists, deleting');
-            grunt.file.delete(pathNormaliser(options.mountPoint, path.sep), {force: true});
+            deleteMountPoint(options.mountPoint);
         }
 
         if(process.platform !== 'win32'){
