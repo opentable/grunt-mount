@@ -80,20 +80,17 @@ module.exports.unmount = function(options, platform, sep){
     var command = {
         darwin:[
             "umount",
-            options.mountPoint
+            mountPoint
         ],
         linux: [
             "umount",
-            options.mountPoint
+            mountPoint
         ],
 
         win32: [
             "net use",
             options.windows.driveLetter + ":",
-            "/delete",
-            "&&",
-            "rmdir",
-            mountPoint
+            "/delete"
         ],
         // Todo:
         sunos: [],

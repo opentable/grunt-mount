@@ -35,8 +35,7 @@ module.exports = function(grunt) {
           },
           mountPoint: "../share",
           username: "someuser",
-          password: "password",
-          createMountPoint: true
+          password: "password"
         }
       }
     },
@@ -46,8 +45,7 @@ module.exports = function(grunt) {
           windows: {
               driveLetter: "X"
           },
-          mountPoint: "../share",
-          removeMountPoint: true
+          mountPoint: "../share"
         }
       }
     }

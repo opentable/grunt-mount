@@ -1,18 +1,6 @@
 module.exports = function(grunt){
     var path = require('path');
 
-    var createMountPoint = function(mountPoint){
-        if(process.platform === 'win32'){
-            grunt.verbose.writeln('deleting directory: ' + mountPoint);
-            grunt.file.delete(mountPoint, {force: true});
-        }
-        else{
-            grunt.verbose.writeln('creating directory: ' + mountPoint);
-            grunt.file.mkdir(mountPoint);
-        }
-    };
-
-
     /*
     var optionsSample = {
       windows: {
@@ -28,8 +16,7 @@ module.exports = function(grunt){
       },
       mountPoint: "../share",     // relative path to the folder, can be ../path/to/folder or ..\path\to\folder
       username: "username",
-      password: "password",
-      createMountPoint: true      // create the mount point folder (existing folders will be overwritten)
+      password: "password"
     };
      */
 
@@ -44,8 +31,13 @@ module.exports = function(grunt){
 
         grunt.verbose.writeflags(options, 'Options');
 
-        if(options.createMountPoint){
-            createMountPoint(options.mountPoint);
+        if(grunt.file.exists(options.mountPoint)){
+            grunt.log.warn('mount point already exists, deleting');
+            grunt.file.delete(options.mountPoint, {force: true});
+        }
+
+        if(process.platform !== 'win32'){
+            grunt.file.mkdir(options.mountPoint, {force: true});
         }
 
         exec(command, grunt, done);
@@ -56,8 +48,7 @@ module.exports = function(grunt){
       windows: {
         driveLetter: "X"
       },
-      mountPoint: "../share",
-      removeMountPoint: [true|false]  // delete the mount-point folder after unmounting
+      mountPoint: "../share"
     };
      */
 
@@ -73,11 +64,7 @@ module.exports = function(grunt){
         grunt.verbose.writeflags(options, 'Options');
 
         exec(command, grunt, function(){
-
-            if(options.removeMountPoint){
-                grunt.file.delete(options.mountPoint, { force: true });
-            }
-
+            grunt.file.delete(options.mountPoint, { force: true });
             done();
         });
     });

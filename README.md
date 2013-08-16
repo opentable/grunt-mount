@@ -29,8 +29,7 @@ grunt.initConfig({
         },
         mountPoint: "../share",         // relative path to mount the share (can be windows or unix style)
         username: "someuser",
-        password: "password",
-        createMountPoint: true          // create the mount-point directory (existing folder will be overwritten)
+        password: "password"
       }
     }
   },
@@ -40,8 +39,7 @@ grunt.initConfig({
             windows:{                    // windows specific options
               driveLetter: "X"
             },
-            mountPoint: "../share",
-            removeMountPoint: true       // deletes the folder after unmounting
+            mountPoint: "../share"
         }
     }
   }

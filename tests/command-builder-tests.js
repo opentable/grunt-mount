@@ -135,7 +135,7 @@ describe('command builder tests', function(){
             it('should return the correct command', function(){
                 var result = commandBuilder.unmount(standardOptions, 'win32', '\\');
 
-                result.should.eql('net use X: /delete && rmdir ..\\share');
+                result.should.eql('net use X: /delete');
             });
         });
 
