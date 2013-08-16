@@ -54,31 +54,4 @@ module.exports = function(grunt){
 
         exec(command, grunt, done);
     });
-
-    /*
-    var optionsSample = {
-      windows: {
-        driveLetter: "X"
-      },
-      mountPoint: "./share"
-    };
-     */
-
-    grunt.registerMultiTask('unmount', 'unmount a network share', function(){
-        var commandBuilder = require('./lib/command-builder').unmount,
-            exec = require('./lib/exec'),
-            options = this.options({
-                removeMountPoint: false
-            }),
-            command = commandBuilder(options, process.platform),
-            done = this.async();
-
-        grunt.verbose.writeflags(options, 'Options');
-
-        exec(command, grunt, function(){
-            grunt.verbose.writeln('deleting folder: ' + options.mountPoint);
-            deleteMountPoint(options.mountPoint);
-            done();
-        });
-    });
 };

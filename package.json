@@ -1,6 +1,6 @@
 {
   "name": "grunt-mount",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "grunt task to mount a network share",
   "homepage": "https://github.com/andyroyle/grunt-mount",
   "main": "Gruntfile.js",
