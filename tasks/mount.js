@@ -1,5 +1,6 @@
 module.exports = function(grunt){
-    var path = require('path');
+    var path = require('path'),
+        pathNormaliser = require('./lib/path-normaliser');
 
     /*
     var optionsSample = {
@@ -12,9 +13,9 @@ module.exports = function(grunt){
       },
       share: {
         host: "my.server.com",
-        folder: "/path/to/share"  // can be /path/to/share or \path\to\share, will be normalised
+        folder: "/path/on/server"  // can be /path/to/share or \path\to\share, will be normalised
       },
-      mountPoint: "../share",     // relative path to the folder, can be ../path/to/folder or ..\path\to\folder
+      mountPoint: "./share",       // path to the folder, can be path/to/folder or path\to\folder
       username: "username",
       password: "password"
     };
@@ -33,7 +34,7 @@ module.exports = function(grunt){
 
         if(grunt.file.exists(options.mountPoint)){
             grunt.log.warn('mount point already exists, deleting');
-            grunt.file.delete(options.mountPoint, {force: true});
+            grunt.file.delete(pathNormaliser(options.mountPoint, path.sep), {force: true});
         }
 
         if(process.platform !== 'win32'){
@@ -48,7 +49,7 @@ module.exports = function(grunt){
       windows: {
         driveLetter: "X"
       },
-      mountPoint: "../share"
+      mountPoint: "./share"
     };
      */
 

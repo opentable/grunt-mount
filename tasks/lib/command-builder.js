@@ -1,25 +1,13 @@
-var p = require('path'),
-
-normalisePath = function(path, platform, sep){
-    var bits;
-
-    // allow the user to specify any kind of path: /path/to/share or \path\to\share
-    if(path.indexOf('/') > -1){
-        bits = path.split('/');
-    }
-    else {
-        bits = path.split('\\');
-    }
-
-    bits = bits.filter(function(v){ return v !== '';});
-
-    return bits.join(sep);
-},
+var pathNormaliser = require('./path-normaliser'),
 
 buildPath = function(options, platform, sep){
     var share = options.share,
         credentials = (platform === 'darwin' && options.username ? options.username + ":" + options.password + "@" : ""),
-        folder = normalisePath(share.folder, platform, sep);
+        folder = pathNormaliser(share.folder, sep);
+
+    if(folder.charAt(0) === sep){
+        folder = folder.substring(1);
+    }
 
     return [
             sep,
@@ -41,7 +29,7 @@ mklink = function(driveLetter, mountPoint){
 
 module.exports.mount = function(options, platform, sep){
     var path = buildPath(options, platform, sep),
-        mountPoint = normalisePath(options.mountPoint, platform, sep);
+        mountPoint = pathNormaliser(options.mountPoint, sep);
 
     var command = {
         darwin:[
@@ -75,7 +63,7 @@ module.exports.mount = function(options, platform, sep){
 };
 
 module.exports.unmount = function(options, platform, sep){
-    var mountPoint = normalisePath(options.mountPoint, platform, sep);
+    var mountPoint = pathNormaliser(options.mountPoint, sep);
 
     var command = {
         darwin:[

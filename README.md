@@ -25,9 +25,9 @@ grunt.initConfig({
         },
         share: {
           host: "my.server.com",
-          folder: "/path/to/folder"     // paths can be windows or *nix style (will be normalised)
+          folder: "/path/on/server"     // paths can be windows or *nix style (will be normalised)
         },
-        mountPoint: "../share",         // relative path to mount the share (can be windows or unix style)
+        mountPoint: "./share",          // path to mount the share (can be windows or unix style)
         username: "someuser",
         password: "password"
       }
@@ -39,7 +39,7 @@ grunt.initConfig({
             windows:{                    // windows specific options
               driveLetter: "X"
             },
-            mountPoint: "../share"
+            mountPoint: "./share"
         }
     }
   }
