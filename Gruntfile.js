@@ -27,16 +27,16 @@ module.exports = function(grunt) {
             driveLetter: "X"
           },
           '*nix': {
-            mountPoint: "/mnt/share",
-            fileSystem: "smbfs",
-            createMountPoint: true
+            fileSystem: "smbfs"
           },
           share: {
             host: "my.server.com",
             folder: "/path/to/share"
           },
+          mountPoint: "../share",
           username: "someuser",
-          password: "password"
+          password: "password",
+          createMountPoint: true
         }
       }
     },
@@ -46,10 +46,8 @@ module.exports = function(grunt) {
           windows: {
               driveLetter: "X"
           },
-          '*nix': {
-              mountPoint: "/mnt/share",
-              removeMountPoint: true
-          }
+          mountPoint: "../share",
+          removeMountPoint: true
         }
       }
     }

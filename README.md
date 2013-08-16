@@ -2,9 +2,15 @@
 
 Grunt task to mount/unmount a network share
 
-Provides two tasks: mount and unmount:
+Provides two tasks: mount and unmount.
 
-# Basic config
+# Installation
+
+```js
+npm install --save-dev grunt-mount
+```
+
+# Configuration
 
 ```js
 grunt.initConfig({
@@ -25,16 +31,16 @@ grunt.initConfig({
           driveLetter: "X"
         },
         '*nix': {                       // *nix specific options
-          mountPoint: "/mnt/share",     // can be relative or absolute
           fileSystem: "smbfs",          // equivalent to 'mount -t [smbfs|cifs|nfs]'
-          createMountPoint: true        // create the mount-point directory if it doesn't exist
         },
         share: {
           host: "my.server.com",
           folder: "/path/to/folder"     // paths can be windows or *nix style (will be normalised)
         },
+        mountPoint: "../share",         // relative path to mount the share (can be windows or unix style)
         username: "someuser",
-        password: "password"
+        password: "password",
+        createMountPoint: true          // create the mount-point directory (existing folder will be overwritten)
       }
     }
   },
@@ -44,19 +50,18 @@ grunt.initConfig({
             windows:{                    // windows specific options
               driveLetter: "X"
             },
-            '*nix':{                     // unix specific options
-              mountPoint: "/mnt/share",
-              removeMountPoint: true     // deletes the folder after unmounting
-            }
+            mountPoint: "../share",
+            removeMountPoint: true       // deletes the folder after unmounting
         }
     }
   }
 });
 
-  grunt.loadNpmTasks('grunt-mount');
+grunt.loadNpmTasks('grunt-mount');
 ```
 
-Limitations:
+# Limitations:
 
-- only works for Linux, MacOS and Windows (FreeBSD and SunOS coming)
+- Only works for Linux, MacOS and Windows (FreeBSD and SunOS coming)
 - Must specify a drive letter for Windows
+- MountPoint must be relative path in order for Windows compatibility

@@ -11,13 +11,13 @@ describe('command builder tests', function(){
                 driveLetter: "X"
             },
             '*nix':{
-                fileSystem: "smbfs",
-                mountPoint: "/mnt/share"
+                fileSystem: "smbfs"
             },
             share:{
                 host: "server.com",
                 folder: "/path/to/share"
             },
+            mountPoint: "../share",
             username: "someuser",
             password: "password"
         };
@@ -26,7 +26,7 @@ describe('command builder tests', function(){
             it('should return the correct command', function(){
                 var options = util._extend({}, standardOptions);
                 var result = commandBuilder.mount(options, 'win32', '\\');
-                result.should.eql('net use X: \\\\server.com\\path\\to\\share password /user:someuser');
+                result.should.eql('net use X: \\\\server.com\\path\\to\\share password /user:someuser && mklink /d ..\\share X:\\');
             });
 
             it('should return the correct command when the path is unix-style', function(){
@@ -34,7 +34,15 @@ describe('command builder tests', function(){
                 options.share.folder = "/path/to/share";
 
                 var result = commandBuilder.mount(options, 'win32', '\\');
-                result.should.eql('net use X: \\\\server.com\\path\\to\\share password /user:someuser');
+                result.should.eql('net use X: \\\\server.com\\path\\to\\share password /user:someuser && mklink /d ..\\share X:\\');
+            });
+
+            it('should return the correct command when the mount-point is unix-style', function(){
+                var options = util._extend({}, standardOptions);
+                options.mountPoint = "../some/share";
+
+                var result = commandBuilder.mount(options, 'win32', '\\');
+                result.should.eql('net use X: \\\\server.com\\path\\to\\share password /user:someuser && mklink /d ..\\some\\share X:\\');
             });
 
             it('should return the correct command when the credentials aren\'t specified', function(){
@@ -43,7 +51,7 @@ describe('command builder tests', function(){
                 delete options.password;
 
                 var result = commandBuilder.mount(options, 'win32', '\\');
-                result.should.eql('net use X: \\\\server.com\\path\\to\\share');
+                result.should.eql('net use X: \\\\server.com\\path\\to\\share && mklink /d ..\\share X:\\');
             });
         });
 
@@ -51,7 +59,23 @@ describe('command builder tests', function(){
             it('should return the correct command', function(){
                 var options = util._extend({}, standardOptions);
                 var result = commandBuilder.mount(options, 'darwin', '/');
-                result.should.eql('mount -t smbfs //someuser:password@server.com/path/to/share /mnt/share');
+                result.should.eql('mount -t smbfs //someuser:password@server.com/path/to/share ../share');
+            });
+
+            it('should return the correct command when the path is windows-style', function(){
+                var options = util._extend({}, standardOptions);
+                options.share.folder = "\\path\\to\\share";
+
+                var result = commandBuilder.mount(options, 'darwin', '/');
+                result.should.eql('mount -t smbfs //someuser:password@server.com/path/to/share ../share');
+            });
+
+            it('should return the correct command when the mount-point is windows-style', function(){
+                var options = util._extend({}, standardOptions);
+                options.mountPoint = "..\\some\\share";
+
+                var result = commandBuilder.mount(options, 'darwin', '/');
+                result.should.eql('mount -t smbfs //someuser:password@server.com/path/to/share ../some/share');
             });
 
             it('should return the correct command when the credentials aren\'t specified', function(){
@@ -60,7 +84,7 @@ describe('command builder tests', function(){
                 delete options.password;
 
                 var result = commandBuilder.mount(options, 'darwin', '/');
-                result.should.eql('mount -t smbfs //server.com/path/to/share /mnt/share');
+                result.should.eql('mount -t smbfs //server.com/path/to/share ../share');
             });
         });
 
@@ -68,7 +92,7 @@ describe('command builder tests', function(){
             it('should return the correct command', function(){
                 var options = util._extend({}, standardOptions);
                 var result = commandBuilder.mount(options, 'linux', '/');
-                result.should.eql('mount -t smbfs //server.com/path/to/share /mnt/share -o user=someuser,pass=password');
+                result.should.eql('mount -t smbfs //server.com/path/to/share ../share -o user=someuser,pass=password');
             });
 
             it('should return the correct command when the path is windows-style', function(){
@@ -76,7 +100,15 @@ describe('command builder tests', function(){
                 options.share.folder = "\\path\\to\\share";
 
                 var result = commandBuilder.mount(options, 'linux', '/');
-                result.should.eql('mount -t smbfs //server.com/path/to/share /mnt/share -o user=someuser,pass=password');
+                result.should.eql('mount -t smbfs //server.com/path/to/share ../share -o user=someuser,pass=password');
+            });
+
+            it('should return the correct command when the mount-point is windows-style', function(){
+                var options = util._extend({}, standardOptions);
+                options.mountPoint = "..\\some\\share";
+
+                var result = commandBuilder.mount(options, 'linux', '/');
+                result.should.eql('mount -t smbfs //server.com/path/to/share ../some/share -o user=someuser,pass=password');
             });
 
             it('should return the correct command when the credentials aren\'t specified', function(){
@@ -85,7 +117,7 @@ describe('command builder tests', function(){
                 delete options.password;
 
                 var result = commandBuilder.mount(options, 'linux', '/');
-                result.should.eql('mount -t smbfs //server.com/path/to/share /mnt/share');
+                result.should.eql('mount -t smbfs //server.com/path/to/share ../share');
             });
         });
     });
@@ -93,9 +125,7 @@ describe('command builder tests', function(){
     describe('unmount', function(){
 
         var standardOptions = {
-            '*nix':{
-                mountPoint: "/mnt/share"
-            },
+            mountPoint: "../share",
             windows: {
                 driveLetter: "X"
             }
@@ -103,24 +133,24 @@ describe('command builder tests', function(){
 
         describe('building the windows command', function(){
             it('should return the correct command', function(){
-                var result = commandBuilder.unmount(standardOptions, 'win32');
+                var result = commandBuilder.unmount(standardOptions, 'win32', '\\');
 
-                result.should.eql('net use X: /delete');
+                result.should.eql('net use X: /delete && rmdir ..\\share');
             });
         });
 
         describe('building the mac os command', function(){
             it('should return the correct command', function(){
-                var result = commandBuilder.unmount(standardOptions, 'darwin');
+                var result = commandBuilder.unmount(standardOptions, 'darwin', '/');
 
-                result.should.eql('umount /mnt/share');
+                result.should.eql('umount ../share');
             });
         });
 
         describe('building the linux command', function(){
             it('should return the correct command', function(){
-                var result = commandBuilder.unmount(standardOptions, 'linux');
-                result.should.eql('umount /mnt/share');
+                var result = commandBuilder.unmount(standardOptions, 'linux', '/');
+                result.should.eql('umount ../share');
             });
         });
     });

@@ -1,41 +1,60 @@
 var p = require('path'),
 
-buildPath = function(options, platform, sep){
-    var share = options.share,
-        credentials = (platform === 'darwin' && options.username ? options.username + ":" + options.password + "@" : ""),
-        bits;
+normalisePath = function(path, platform, sep){
+    var bits;
 
     // allow the user to specify any kind of path: /path/to/share or \path\to\share
-    if(share.folder.indexOf('/') > -1){
-        bits = share.folder.split('/');
+    if(path.indexOf('/') > -1){
+        bits = path.split('/');
     }
     else {
-        bits = share.folder.split('\\');
+        bits = path.split('\\');
     }
 
     bits = bits.filter(function(v){ return v !== '';});
 
-    return sep + sep + [
+    return bits.join(sep);
+},
+
+buildPath = function(options, platform, sep){
+    var share = options.share,
+        credentials = (platform === 'darwin' && options.username ? options.username + ":" + options.password + "@" : ""),
+        folder = normalisePath(share.folder, platform, sep);
+
+    return [
+            sep,
             credentials + share.host,
-            bits.join(sep)
+            folder
         ].join(sep);
+},
+
+mklink = function(driveLetter, mountPoint){
+    var command = [
+        "mklink",
+        "/d",
+        mountPoint,
+        driveLetter + ":\\"
+    ];
+
+    return command.join(" ").trim();
 };
 
 module.exports.mount = function(options, platform, sep){
-    var path = buildPath(options, platform, sep);
+    var path = buildPath(options, platform, sep),
+        mountPoint = normalisePath(options.mountPoint, platform, sep);
 
     var command = {
         darwin:[
             "mount",
             "-t " + options['*nix'].fileSystem,
             path,
-            options['*nix'].mountPoint
+            mountPoint
         ],
         linux: [
             "mount",
             "-t " + options['*nix'].fileSystem,
             path,
-            options['*nix'].mountPoint,
+            mountPoint,
             options.username ? "-o user=" + options.username + ",pass=" + options.password : ""
         ],
         win32: [
@@ -43,31 +62,38 @@ module.exports.mount = function(options, platform, sep){
             options.windows.driveLetter + ":",
             path,
             options.password ? options.password : "",
-            options.username ? "/user:" + options.username : ""
+            options.username ? "/user:" + options.username : "",
+            "&&",
+            mklink(options.windows.driveLetter, mountPoint)
         ],
         // Todo:
         sunos: [],
         freebsd: []
     };
 
-    return command[platform].join(" ").trim();
+    return command[platform].filter(function(v){ return v !== '';}).join(" ").trim();
 };
 
-module.exports.unmount = function(options, platform){
+module.exports.unmount = function(options, platform, sep){
+    var mountPoint = normalisePath(options.mountPoint, platform, sep);
+
     var command = {
         darwin:[
             "umount",
-            options['*nix'].mountPoint
+            options.mountPoint
         ],
         linux: [
             "umount",
-            options['*nix'].mountPoint
+            options.mountPoint
         ],
 
         win32: [
             "net use",
             options.windows.driveLetter + ":",
-            "/delete"
+            "/delete",
+            "&&",
+            "rmdir",
+            mountPoint
         ],
         // Todo:
         sunos: [],

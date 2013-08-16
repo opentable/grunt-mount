@@ -1,6 +1,18 @@
 module.exports = function(grunt){
     var path = require('path');
 
+    var createMountPoint = function(mountPoint){
+        if(process.platform === 'win32'){
+            grunt.verbose.writeln('deleting directory: ' + mountPoint);
+            grunt.file.delete(mountPoint, {force: true});
+        }
+        else{
+            grunt.verbose.writeln('creating directory: ' + mountPoint);
+            grunt.file.mkdir(mountPoint);
+        }
+    };
+
+
     /*
     var optionsSample = {
       windows: {
@@ -8,16 +20,16 @@ module.exports = function(grunt){
       },
       '*nix': {
         // options common to linux, mac os
-        mountPoint: "/mnt/share",
         fileSystem: "smbfs",
-        createMountPoint: true // create the mount point folder
       },
       share: {
         host: "my.server.com",
         folder: "/path/to/share"  // can be /path/to/share or \path\to\share, will be normalised
       },
+      mountPoint: "../share",     // relative path to the folder, can be ../path/to/folder or ..\path\to\folder
       username: "username",
-      password: "password"
+      password: "password",
+      createMountPoint: true      // create the mount point folder (existing folders will be overwritten)
     };
      */
 
@@ -32,9 +44,8 @@ module.exports = function(grunt){
 
         grunt.verbose.writeflags(options, 'Options');
 
-        if(options['*nix'].createMountPoint && process.platform !== 'win32'){
-            grunt.verbose.writeln('creating directory: ' + options['*nix'].mountPoint);
-            grunt.file.mkdir(options['*nix'].mountPoint);
+        if(options.createMountPoint){
+            createMountPoint(options.mountPoint);
         }
 
         exec(command, grunt, done);
@@ -45,10 +56,8 @@ module.exports = function(grunt){
       windows: {
         driveLetter: "X"
       },
-      '*nux': {
-        mountPoint: "/mnt/share",
-        removeMountPoint: [true|false] // if *nix, delete the mount-point folder after unmounting
-      }
+      mountPoint: "../share",
+      removeMountPoint: [true|false]  // delete the mount-point folder after unmounting
     };
      */
 
@@ -65,8 +74,8 @@ module.exports = function(grunt){
 
         exec(command, grunt, function(){
 
-            if(options['*nix'].removeMountPoint && process.platform !== 'win32'){
-                grunt.file.delete(options['*nix'].mountPoint, { force: true });
+            if(options.removeMountPoint){
+                grunt.file.delete(options.mountPoint, { force: true });
             }
 
             done();
