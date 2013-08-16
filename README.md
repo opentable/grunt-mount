@@ -14,16 +14,6 @@ npm install --save-dev grunt-mount
 
 ```js
 grunt.initConfig({
-  jshint: {
-    all: [
-      'Gruntfile.js',
-      'tasks/**/*.js'
-    ],
-    options: {
-      jshintrc: '.jshintrc'
-    }
-  },
-
   mount: {
     share: {
       options: {
