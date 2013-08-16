@@ -76,7 +76,8 @@ module.exports = function(grunt){
         grunt.verbose.writeflags(options, 'Options');
 
         exec(command, grunt, function(){
-            grunt.file.delete(options.mountPoint, { force: true });
+            grunt.verbose.writeln('deleting folder: ' + options.mountPoint);
+            deleteMountPoint(options.mountPoint);
             done();
         });
     });
