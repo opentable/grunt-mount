@@ -35,18 +35,20 @@ grunt.initConfig({
   },
   unmount: {
     share: {
-        options: {
-            windows:{                    // windows specific options
-              driveLetter: "X"
-            },
-            mountPoint: "./share"
-        }
+      options: {
+        windows:{                    // windows specific options
+          driveLetter: "X"
+        },
+        mountPoint: "./share"
+      }
     }
   }
 });
 
 grunt.loadNpmTasks('grunt-mount');
 ```
+
+On *nix systems, the share will be mounted at the specified mount-point. On Windows, the share will be mounted on the specified drive letter, and a symlink will be created at the mount-point.
 
 # Limitations:
 
