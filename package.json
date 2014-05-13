@@ -1,15 +1,15 @@
 {
   "name": "grunt-mount",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "grunt task to mount a network share",
-  "homepage": "https://github.com/andyroyle/grunt-mount",
+  "homepage": "https://github.com/opentable/grunt-mount",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "grunt test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/andyroyle/grunt-mount.git"
+    "url": "git://github.com/opentable/grunt-mount.git"
   },
   "keywords": [
     "gruntplugin"
@@ -18,11 +18,11 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/andyroyle/grunt-mount/blob/master/LICENSE"
+      "url": "https://github.com/opentable/grunt-mount/blob/master/LICENSE"
     }
   ],
   "bugs": {
-    "url": "https://github.com/andyroyle/grunt-mount/issues"
+    "url": "https://github.com/opentable/grunt-mount/issues"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

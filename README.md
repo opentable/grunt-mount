@@ -1,4 +1,4 @@
-# grunt-mount [![Build Status](https://travis-ci.org/andyroyle/grunt-mount.png?branch=master)](https://travis-ci.org/andyroyle/grunt-mount) [![NPM version](https://badge.fury.io/js/grunt-mount.png)](http://badge.fury.io/js/grunt-mount) ![Dependencies](https://david-dm.org/andyroyle/grunt-mount.png)
+# grunt-mount [![Build Status](https://travis-ci.org/opentable/grunt-mount.png?branch=master)](https://travis-ci.org/opentable/grunt-mount) [![NPM version](https://badge.fury.io/js/grunt-mount.png)](http://badge.fury.io/js/grunt-mount) ![Dependencies](https://david-dm.org/opentable/grunt-mount.png)
 
 Grunt task to mount/unmount a network share
 
